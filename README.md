@@ -18,6 +18,7 @@ Instructions:<BR>
 - Run as an Administrator (Right-click > 'Run as admin')
 
 Changelog:<BR>
+- [24jan26] version 1.3: Added better log to show how much is cleaned
 - [18jan26] version 1.2: Added cleaning of WHC log
 - [15dec25] version 1.1: Added log to show how much is cleaned
 - [15dec25] version 1.0: Initial release 
