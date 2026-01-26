@@ -14,10 +14,7 @@ This log is used by Defender to report status and health information to the Wind
 Windows Defender Protection History displays recent actions, such as blocked threats and completed scans. It retains events for two weeks, showing critical (red) or informational (yellow) items that can be filtered to manage quarantined files. Events are automatically removed after two weeks. This log can be safely removed.
 
 Instructions:<BR>
-- Create a txt.file on your desktop (Right-click on Desktop > New > Text Document)
-- Copy and paste the code into a text file (.txt)
-- Give the text file a name, such as WDSL1.1
-- Rename the .txt to .bat
+- Download the batchfile to your Desktop
 - Run as an Administrator (Right-click > 'Run as admin')
 
 Changelog:<BR>
