@@ -1,86 +1,38 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo Windows Defender Cleaner 1.2
-echo ----------------------------------
+:: --------------------------------------------
+:: Windows Defender Cleaner 1.4
+:: --------------------------------------------
 
-:: Define log file paths
-set "LOG_OP=C:\Windows\System32\winevt\Logs\Microsoft-Windows-Windows Defender%4Operational.evtx"
-set "LOG_WHC=C:\Windows\System32\winevt\Logs\Microsoft-Windows-Windows Defender%4WHC.evtx"
+:: Channel names
+set "CH_DEFENDER=Microsoft-Windows-Windows Defender/Operational"
+set "CH_WHC=Microsoft-Windows-Windows Defender/WHC"
 
-:: Clean both logs
-call :CleanLog "Operational" "%LOG_OP%" "Microsoft-Windows-Windows Defender/Operational"
-call :CleanLog "WHC" "%LOG_WHC%" "Microsoft-Windows-Windows Defender/WHC"
+:: [1] Clear Windows Defender Security (Operational) log
+wevtutil cl "%CH_DEFENDER%" >nul 2>nul
 
-@echo off
-setlocal enabledelayedexpansion
+:: [2] Clear Windows Health Center (WHC) log
+wevtutil cl "%CH_WHC%" >nul 2>nul
 
-echo Windows Defender Cleaner 1.2
-echo ----------------------------------------------------
+:: [3] Clear Protection History database
+set "PH_PATH=C:\ProgramData\Microsoft\Windows Defender\Scans\History\Service"
 
-:: Paths for Defender logs
-set "LOG_WHC=C:\Windows\System32\winevt\Logs\Microsoft-Windows-Windows Defender%4WHC.evtx"
+net stop WinDefend /y >nul 2>nul
+net stop SecurityHealthService >nul 2>nul
 
-:: Clean WHC log
-call :CleanLog "WHC" "%LOG_WHC%" "Microsoft-Windows-Windows Defender/WHC"
+del /f /q "%PH_PATH%\*" >nul 2>nul
 
-:: Clean Security log
-call :CleanSecurity
+net start WinDefend >nul 2>nul
+net start SecurityHealthService >nul 2>nul
 
-echo ----------------------------------------------------
-echo Cleaning complete.
-pause
+echo.
+echo [1] Windows Defender Security Log successfully cleaned
+echo [2] Windows Health Center or WHC log successfully cleaned
+echo [3] Protection History successfully cleaned
+echo.
+
+timeout /t 7 >nul
+
+endlocal
 exit /b
-
-:CleanLog
-echo.
-echo Cleaning %~1 log...
-echo ------------------------------
-
-:: Count entries before
-for /f %%A in ('wevtutil qe "%~3" /f:text ^| find /c ":"') do set COUNT_BEFORE=%%A
-echo Entries before: %COUNT_BEFORE%
-
-:: Clear the log
-wevtutil cl "%~3"
-if errorlevel 1 (
-echo Failed to clear %~1 log.
-goto :EOF
-)
-
-:: Count entries after
-for /f %%A in ('wevtutil qe "%~3" /f:text ^| find /c ":"') do set COUNT_AFTER=%%A
-echo Entries after: %COUNT_AFTER%
-
-:: Calculate removed entries
-set /a REMOVED=%COUNT_BEFORE% - %COUNT_AFTER%
-echo Removed: %REMOVED% entries
-
-goto :EOF
-
-:CleanSecurity
-echo.
-echo Cleaning Security log...
-echo ------------------------------
-
-:: Count entries before
-for /f %%A in ('wevtutil qe Security /f:text ^| find /c ":"') do set SEC_BEFORE=%%A
-echo Entries before: %SEC_BEFORE%
-
-:: Clear the Security log
-wevtutil cl Security
-if errorlevel 1 (
-echo Failed to clear Security log.
-echo (You may need the "Manage auditing and security log" privilege.)
-goto :EOF
-)
-
-:: Count entries after
-for /f %%A in ('wevtutil qe Security /f:text ^| find /c ":"') do set SEC_AFTER=%%A
-echo Entries after: %SEC_AFTER%
-
-:: Calculate removed entries
-set /a SEC_REMOVED=%SEC_BEFORE% - %SEC_AFTER%
-echo Removed: %SEC_REMOVED% entries
-
-goto :EOF
