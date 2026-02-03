@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: ----------------------------------------------------
-:: Windows Defender Cleaner (with logging + boot cleanup)
+:: Windows Defender Cleaner 1.5
 :: ----------------------------------------------------
 
 :: Base folder = folder of this script
@@ -50,6 +50,13 @@ echo exit >> "%CLEANER%"
 reg add HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce /v PHClean /t REG_SZ /d "\"%CLEANER%\"" /f >> "%LOGFILE%" 2>&1
 
 echo Boot‑time cleanup registered. >> "%LOGFILE%"
+
+:: [4] Clear MpCmdRun.log (Defender command-line utility log)
+echo Cleaning MpCmdRun.log... >> "%LOGFILE%"
+echo. > "%LOCALAPPDATA%\Temp\MpCmdRun.log" 2>nul
+echo. > "C:\Windows\Temp\MpCmdRun.log" 2>nul
+echo MpCmdRun.log truncated (if it existed). >> "%LOGFILE%"
+
 echo. >> "%LOGFILE%"
 echo Completed: %date% %time% >> "%LOGFILE%"
 echo ---------------------------------------------- >> "%LOGFILE%"
@@ -59,6 +66,7 @@ echo.
 echo [1] Windows Defender Security Log successfully cleaned
 echo [2] Windows Health Center or WHC log successfully cleaned
 echo [3] Protection History will be cleaned at next reboot
+echo [4] MpCmdRun.log cleaned (truncated)
 echo.
 echo Log saved as:
 echo %LOGFILE%
