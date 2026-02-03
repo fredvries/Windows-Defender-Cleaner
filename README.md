@@ -13,11 +13,15 @@ This log is used by Defender to report status and health information to the Wind
 [3] Windows Defender Protection History log<BR>
 Windows Defender Protection History displays recent actions, such as blocked threats and completed scans. It retains events for two weeks, showing critical (red) or informational (yellow) items that can be filtered to manage quarantined files. Events are automatically removed after two weeks. This log can be safely removed.
 
+[4] MpCmdRun.log
+MpCmdRun.log is a temporary diagnostic log file created by Microsoft Defender Antivirus (Windows Defender). It records activity from the command-line utility MpCmdRun.exe, such as manual scans, signature updates forced via command line, troubleshooting runs, or certain automated operations. This log can be safely cleaned, since Defender recreates/re-populates it as new events occur.
+
 Instructions:<BR>
 - Download the batchfile to your Desktop
 - Run as an Administrator (Right-click > 'Run as admin')
 
 Changelog:<BR>
+- [03feb26] version 1.5: Added cleaning of MpCmdRun.log
 - [26jan26] version 1.4: Added removal of Windows Defender Protection History log
 - [24jan26] version 1.3: Added better log to show how much is cleaned
 - [18jan26] version 1.2: Added cleaning of WHC log
